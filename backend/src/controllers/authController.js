@@ -24,9 +24,9 @@ export const register = async (req, res) => {
         const hashedPassword = await bcrypt.hash(password, salt);
 
         // Insert new user
-        await createUser(email, hashedPassword);
+        const insertId = await createUser(email, hashedPassword);
 
-        return sendSuccess(res, "User registered successfully", 201);
+        return sendSuccess(res, "User registered successfully", { insertId },  201);
     } catch (error) {
         console.error(error);
         return sendError(res, "Server error");
@@ -39,7 +39,7 @@ export const login = async (req, res) => {
 
     try {
         // Check if user exists
-        const user = getUserByEmail(email);
+        const user = await getUserByEmail(email);
 
         if (!user) {
             return sendError(res, "Invalid email. No user exists with that email.", 401);
@@ -55,9 +55,15 @@ export const login = async (req, res) => {
         // Generate JWT
         const token = generateToken({ id: user.id, email: user.email });
 
-        return sendSuccess(res, "Login successful", { token, email: user.email });
+        return sendSuccess(res, "Login successful", { token, id: user.id });
     } catch (error) {
         console.error(error);
         return sendError(res, "Server error");
     }
+};
+
+// Return authenticated user
+export const getCurrentUser = (req, res) => {
+    // req.user comes from authMiddleware (decoded JWT)
+    return sendSuccess(res, "User retrieved successfully", { user: req.user });
 };
