@@ -53,7 +53,7 @@ export const login = async (req, res) => {
         }
 
         // Generate JWT
-        const token = generateToken({ id: user.id, email: user.email });
+        const token = generateToken({ id: user.id });
 
         return sendSuccess(res, "Login successful", { token, id: user.id });
     } catch (error) {

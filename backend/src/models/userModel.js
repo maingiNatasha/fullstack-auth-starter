@@ -23,11 +23,11 @@ export const saveUserProfile = async (userId, data) => {
     const { firstname, lastname, username } = data;
 
     const [result] = await pool.query(
-        `INSERT INTO user_profiles (user_id, firstname, lastname, username)
+        `INSERT INTO user_profiles (user_id, first_name, last_name, username)
          VALUES (?, ?, ?, ?)
          ON DUPLICATE KEY UPDATE
-           firstname = VALUES(firstname),
-           lastname = VALUES(lastname),
+           first_name = VALUES(first_name),
+           last_name = VALUES(last_name),
            username = VALUES(username)`,
         [userId, firstname, lastname, username]
     );
