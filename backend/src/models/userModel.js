@@ -12,6 +12,18 @@ export const createUser = async (email, hashedPassword) => {
     return result.insertId;
 };
 
+// Update user password
+export const updateUserPasswordById = async (userId, hashedPassword) => {
+    const [result] = await pool.query(
+        `UPDATE users
+         SET password = ?, updated_at = CURRENT_TIMESTAMP
+         WHERE id = ?`,
+        [hashedPassword, userId]
+    );
+
+    return result.affectedRows > 0;
+}
+
 // Get user profile
 export const getUserProfile = async (id) => {
     const [rows] = await pool.query("SELECT * FROM user_profiles WHERE user_id = ?", [id]);
