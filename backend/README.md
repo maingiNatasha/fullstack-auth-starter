@@ -106,6 +106,16 @@ Typical variables include:
 
 ---
 
+## 🗄 Database Schema
+
+The database schema is provided in:
+
+- `src/db/schema.sql`
+
+This file is generated using `mysqldump` and contains tables, indexes, and constraints only (no data).
+
+---
+
 ## 🚀 Running the Backend
 
 1. Install dependencies:
