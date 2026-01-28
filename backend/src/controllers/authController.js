@@ -1,11 +1,7 @@
 import bcrypt from "bcryptjs";
-import dotenv from "dotenv";
 import { getUserByEmail, createUser } from "../models/userModel.js";
 import { sendSuccess, sendError } from "../utils/response.js";
 import { generateToken } from "../utils/token.js";
-
-// Read .env file
-dotenv.config();
 
 // User registration
 export const register = async (req, res) => {
