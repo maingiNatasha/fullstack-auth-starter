@@ -85,5 +85,5 @@ export const getCurrentUser = async (req, res) => {
     const user = await getUserById(req.user.id);
     if (!user) return sendError(res, "User not found", 404)
 
-    return sendSuccess(res, "User retrieved successfully", { id: user.id, email: user.email });
+    return sendSuccess(res, "User retrieved successfully", { user });
 };
