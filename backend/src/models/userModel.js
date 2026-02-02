@@ -6,6 +6,12 @@ export const getUserByEmail = async (email) => {
     return rows[0] || null;
 };
 
+// Get a user by id
+export const getUserById = async(id) => {
+    const [rows] = await pool.query("SELECT id, email FROM users WHERE id = ?", [id]);
+    return rows[0] || null;
+};
+
 // Create a new user
 export const createUser = async (email, hashedPassword) => {
     const [result] = await pool.query("INSERT INTO users (email, password) VALUES (?, ?)", [email, hashedPassword]);

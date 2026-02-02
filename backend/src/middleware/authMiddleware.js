@@ -7,14 +7,9 @@ import { sendError } from "../utils/response.js";
  */
 
 export const authMiddleware = (req, res, next) => {
-    const authHeader = req.headers.authorization;
-
-    if (!authHeader || !authHeader.startsWith("Bearer ")) {
-        return sendError(res, "No token provided", 401);
-    }
-
-    // Retrieve the token
-    const token = authHeader.split(" ")[1];
+    // Retrieve the token from cookies
+    const token = req.cookies?.access_token;
+    if (!token) return sendError(res, "Unauthorized", 401);
 
     try {
         const decoded = verifyToken(token);
