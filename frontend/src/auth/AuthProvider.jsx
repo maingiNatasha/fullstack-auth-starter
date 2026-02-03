@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { authApi } from "../api/auth.js";
 import AuthContext from "./AuthContext.jsx";
+import { FaRegComment } from "react-icons/fa";
 
 export function AuthProvider({ children }) {
     const [user, setUser] = useState(null);
@@ -20,13 +21,13 @@ export function AuthProvider({ children }) {
         }
     };
 
-    const login = async (email, password) => {
-        await authApi.login(email, password); // sets HttpOnly cookie
+    const login = async (form) => {
+        await authApi.login(form.email, form.password, form.remember); // sets HttpOnly cookie
         return refreshUser(); // populate user state
     }
 
-    const register = async (email, password) => {
-        await authApi.register(email, password);
+    const register = async (form) => {
+        await authApi.register(form.email, form.password);
         return refreshUser();
     }
 

@@ -1,10 +1,11 @@
 import { Navigate } from "react-router-dom";
 import { useAuth } from "../auth/useAuth.js";
+import Loader from "../components/Loader.jsx";
 
 function HomeRedirect() {
 	const { loading, isAuthenticated } = useAuth();
 
-	if (loading) return <div>Loading...</div>;
+	if (loading) return <Loader label="Checking session..." />;
 
 	return isAuthenticated ? (
 		<Navigate to="/home" replace />

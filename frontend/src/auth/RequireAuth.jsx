@@ -1,15 +1,17 @@
-import { Navigate, Outlet } from "react-router-dom";
+import { Navigate, Outlet, useLocation } from "react-router-dom";
 import { useAuth } from "./useAuth.js";
+import Loader from "../components/Loader.jsx";
 
 function RequireAuth() {
     const { isAuthenticated, loading } = useAuth();
+    const location = useLocation();
 
     if (loading) {
-        return <div>Loading...</div>
+        return <Loader label="Loading..." />;
     }
 
     if (!isAuthenticated) {
-        return <Navigate to="/login" replace />
+        return <Navigate to="/login" replace state={{ from: location }} />;
     }
 
     return <Outlet />;

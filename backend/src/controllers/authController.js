@@ -31,7 +31,8 @@ export const register = async (req, res) => {
 
 // User log in
 export const login = async (req, res) => {
-    const { email, password } = req.body;
+    const { email, password, remember } = req.body;
+    const rememberMe = remember === true || remember === "true";
 
     try {
         // Check if user exists
@@ -52,15 +53,22 @@ export const login = async (req, res) => {
         const token = generateToken({ id: user.id });
 
         // Set cookie
-        res.cookie("access_token", token, {
+        const cookieOptions = {
             httpOnly: true,
-            secure: process.env.NODE_ENV === "production", // true in prod
+            secure: process.env.NODE_ENV === "production",
             sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
-            maxAge: 1000 * 60 * 60 * 24 * 7, // 7 days
-            path: "/"
-        });
+            path: "/",
+        };
 
-        return sendSuccess(res, "Login successful", { id: user.id, email: user.email });
+        // Set maxAge only when rememberMe is true
+        if (rememberMe) {
+            cookieOptions.maxAge = 1000 * 60 * 60 * 24 * 30;
+            cookieOptions.expires = new Date(Date.now() + cookieOptions.maxAge);
+        }
+
+        res.cookie("access_token", token, cookieOptions);
+
+        return sendSuccess(res, "Login successful", { user: { id: user.id, email: user.email } });
     } catch (error) {
         console.error(error);
         return sendError(res, "Server error");
