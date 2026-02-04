@@ -1,4 +1,5 @@
 import axios from "axios";
+import { triggerUnauthorized } from "../auth/authEvents.js";
 
 // Create axios client
 const api = axios.create({
@@ -9,10 +10,21 @@ const api = axios.create({
     }
 });
 
+let handled = false;
+
 // Add response interceptor
 api.interceptors.response.use(
     (response) => response.data,
     (error) => {
+        const status = error.response?.status;
+        const serverMessage = error.response?.data?.message || error.response?.data?.error;
+
+        if (status === 401 && !handled) {
+            handled = true;
+            const message = serverMessage === "Token expired. Please log in again." ? "Session expired. Please log in again." : "You've been logged out. Please log in again.";
+            triggerUnauthorized({ message });
+        }
+
         const err = {
             status: error.response?.status,
             message: error.response?.data?.message || error.response?.data?.error || error.message,

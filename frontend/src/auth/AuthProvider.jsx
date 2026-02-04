@@ -1,11 +1,15 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 import { authApi } from "../api/auth.js";
 import AuthContext from "./AuthContext.jsx";
-import { FaRegComment } from "react-icons/fa";
+import { setUnauthorizedHandler } from "./authEvents.js";
 
 export function AuthProvider({ children }) {
+    const navigate = useNavigate();
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
+    const unauthorizedHandledRef = useRef(false);
 
     // Fetch current user based on cookie
     const refreshUser = async () => {
@@ -13,6 +17,12 @@ export function AuthProvider({ children }) {
             const res = await authApi.me();
             const currentUser = res?.data?.user ?? null;
             setUser(currentUser);
+
+            if (currentUser) {
+                // reset the guard after successful auth
+                unauthorizedHandledRef.current = false;
+            }
+
             return currentUser;
         } catch (err) {
             console.error(err);
@@ -34,10 +44,14 @@ export function AuthProvider({ children }) {
     const logout = async () => {
         try {
             await authApi.logout(); // clears cookie
+            toast.success("Logged out successfully");
+        } catch {
+            toast.info("You have been logged out");
         } finally {
             setUser(null);
+            navigate("/login", { replace: true });
         }
-    }
+    };
 
     // Bootstrap: on initial app load, check if cookie exists by calling /auth/user
     // Bootstrapping = the process of restoring auth state when the app first loads.
@@ -49,6 +63,18 @@ export function AuthProvider({ children }) {
         })();
     }, []);
 
+    useEffect(() => {
+        setUnauthorizedHandler(({ message }) => {
+            if (unauthorizedHandledRef.current) return;
+
+            unauthorizedHandledRef.current = true;
+
+            setUser(null);
+            toast.info(message || "Session expired. Please log in again.")
+            navigate("/login", { replace: true });
+        });
+    }, [navigate]);
+
     const value = {
         user,
         isAuthenticated: !!user,
@@ -57,7 +83,6 @@ export function AuthProvider({ children }) {
         register,
         logout,
         refreshUser,
-        setUser,
     };
 
     return (

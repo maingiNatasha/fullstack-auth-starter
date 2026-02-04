@@ -3,7 +3,7 @@ import { sendError } from "../utils/response.js";
 
 /**
  * Middleware to protect routes
- * Checks for a valid JWT token in the Authorization header
+ * Checks for a valid JWT token in the cookies
  */
 
 export const authMiddleware = (req, res, next) => {

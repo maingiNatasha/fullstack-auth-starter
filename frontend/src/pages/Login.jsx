@@ -29,6 +29,7 @@ function Login() {
 
 	async function handleSubmit(e) {
 		e.preventDefault();
+        if (submitting) return;
 
         try {
             setSubmitting(true);
@@ -37,7 +38,7 @@ function Login() {
             navigate(from, { replace: true });
         } catch (err) {
             // From axios interceptor: { status, message, data }
-            const message = err?.message || "Login failed. Please try aain.";
+            const message = err?.message || "Login failed. Please try again.";
             toast.error(message);
         } finally {
             setSubmitting(false);

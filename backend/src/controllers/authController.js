@@ -62,7 +62,8 @@ export const login = async (req, res) => {
 
         // Set maxAge only when rememberMe is true
         if (rememberMe) {
-            cookieOptions.maxAge = 1000 * 60 * 60 * 24 * 30;
+            const ONE_HOUR = 1000 * 60 * 60;
+            cookieOptions.maxAge = ONE_HOUR + 60_000; // +1 min buffer
             cookieOptions.expires = new Date(Date.now() + cookieOptions.maxAge);
         }
 
