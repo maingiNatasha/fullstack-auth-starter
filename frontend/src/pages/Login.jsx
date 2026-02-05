@@ -43,13 +43,13 @@ function Login() {
         } finally {
             setSubmitting(false);
         }
-	};
+	}
 
     return (
         <FormLayout>
             <div>
                 <div className='text-center text-gray-950'>
-                    <h1 className='text-2xl font-bold'>Welcome back!</h1>
+                    <h1 className='text-2xl font-bold'>Welcome back</h1>
                     <p className='font-semibold mt-3'>Sign in to continue</p>
                 </div>
                 <div className='flex justify-center mb-6'>

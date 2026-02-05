@@ -10,6 +10,10 @@ export function AuthProvider({ children }) {
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
     const unauthorizedHandledRef = useRef(false);
+    const hadSessionRef = useRef(false);
+
+    // Track bootstrap state inside the unauthorized handler closure
+    const loadingRef = useRef(loading);
 
     // Fetch current user based on cookie
     const refreshUser = async () => {
@@ -19,8 +23,8 @@ export function AuthProvider({ children }) {
             setUser(currentUser);
 
             if (currentUser) {
-                // reset the guard after successful auth
-                unauthorizedHandledRef.current = false;
+                hadSessionRef.current = true; // indicate a session existed
+                unauthorizedHandledRef.current = false; // reset the guard after successful auth
             }
 
             return currentUser;
@@ -38,7 +42,6 @@ export function AuthProvider({ children }) {
 
     const register = async (form) => {
         await authApi.register(form.email, form.password);
-        return refreshUser();
     }
 
     const logout = async () => {
@@ -49,6 +52,7 @@ export function AuthProvider({ children }) {
             toast.info("You have been logged out");
         } finally {
             setUser(null);
+            hadSessionRef.current = false;
             navigate("/login", { replace: true });
         }
     };
@@ -64,15 +68,34 @@ export function AuthProvider({ children }) {
     }, []);
 
     useEffect(() => {
+        // Keep a mutable loading flag for the unauthorized handler
+        loadingRef.current = loading;
+    }, [loading]);
+
+    useEffect(() => {
         setUnauthorizedHandler(({ message }) => {
             if (unauthorizedHandledRef.current) return;
+            if (loadingRef.current) return;
 
+            // No session case
+            if (!hadSessionRef.current) {
+                setUser(null);
+                // Public routes can remain accessible; RequireAuth guards protected routes.
+                return;
+            }
+
+            // Session expired case
             unauthorizedHandledRef.current = true;
 
             setUser(null);
             toast.info(message || "Session expired. Please log in again.")
             navigate("/login", { replace: true });
         });
+
+        // Clean up
+        return () => {
+            setUnauthorizedHandler(null);
+        };
     }, [navigate]);
 
     const value = {
