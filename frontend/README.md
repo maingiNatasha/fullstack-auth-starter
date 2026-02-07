@@ -185,51 +185,6 @@ flowchart TD
     H -->|Protected route + unauthenticated| J
 ```
 
-### Login flow
-
-```mermaid
-sequenceDiagram
-    actor U as User
-    participant L as Login.jsx
-    participant P as AuthProvider
-    participant A as authApi
-    participant B as Backend
-    participant R as Router
-
-    U->>L: Submit email/password/remember
-    L->>P: login(form)
-    P->>A: login(email, password, remember)
-    A->>B: POST /auth/login
-    B-->>A: Set cookie + success
-    P->>A: me()
-    A->>B: GET /auth/user
-    B-->>A: user payload
-    P-->>L: user hydrated
-    L->>R: navigate(from || /home)
-```
-
-### Session-expired handling (global 401)
-
-```mermaid
-sequenceDiagram
-    participant UI as Any protected page
-    participant C as Axios client interceptor
-    participant E as authEvents
-    participant P as AuthProvider
-    participant R as Router
-
-    UI->>C: API request
-    C-->>UI: 401 response
-    C->>E: triggerUnauthorized(message)
-    E->>P: onUnauthorized(payload)
-    alt still bootstrapping or no previous session
-        P-->>P: Ignore redirect/toast
-    else session existed and expired
-        P-->>P: clear user
-        P->>R: navigate('/login', replace=true)
-    end
-```
-
 ## API Layer Details
 
 ### `src/api/auth.js`
