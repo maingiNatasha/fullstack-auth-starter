@@ -6,7 +6,7 @@ import { useAuth } from "../auth/useAuth.js";
 import { MdPersonAddAlt1, MdError } from "react-icons/md";
 import { FaCheckCircle } from "react-icons/fa";
 
-// Helper funcyion to evaluate password
+// Helper function to evaluate password
 function getPasswordChecks(password) {
     return {
         length: password.length >= 8,
@@ -19,13 +19,13 @@ function getPasswordChecks(password) {
 function Register() {
     const navigate = useNavigate();
     const [form, setForm] = useState({ email: "", password: "" });
-    const [repeatPassword, setRepeatPassword] = useState("");
+    const [confirmPassword, setConfirmPassword] = useState("");
     const [submitting, setSubmitting] = useState(false);
     const { register, isAuthenticated, loading } = useAuth();
 
     // Password checks
     const checks = getPasswordChecks(form.password);
-    const passwordsMatch = form.password === repeatPassword;
+    const passwordsMatch = form.password === confirmPassword;
 
     // If user is already logged in, don't show registration form
     if (!loading && isAuthenticated) {
@@ -120,21 +120,21 @@ function Register() {
                         </ul>
                     </div>
 
-                    {/* Repeat Password */}
+                    {/* Confirm Password */}
                     <div>
                         <label className='block text-sm font-medium text-gray-800'>
-                            Repeat password
+                            Confirm password
                         </label>
                         <input
-                            name="repeat-password"
+                            name="confirm-password"
                             type="password"
                             className='mt-1 w-full px-3 py-2 border border-gray-400 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500'
                             placeholder='********'
-                            value={repeatPassword}
-                            onChange={(e) => setRepeatPassword(e.target.value)}
+                            value={confirmPassword}
+                            onChange={(e) => setConfirmPassword(e.target.value)}
                             required
                         />
-                        {repeatPassword.length > 0 && !passwordsMatch && (
+                        {confirmPassword.length > 0 && !passwordsMatch && (
                             <div className="flex items-center mt-2 text-xs text-red-600">
                                 <span><MdError size={15} className='mr-1' /></span>
                                 <span>Passwords do not match.</span>

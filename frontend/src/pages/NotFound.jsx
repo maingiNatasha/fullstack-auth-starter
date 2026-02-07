@@ -5,7 +5,7 @@ function NotFound() {
     return (
         <div className="min-h-screen flex items-center justify-center px-4 bg-gradient-to-r from-purple-50 via-purple-100 to-purple-200/80">
             <div className="w-full max-w-md text-center rounded-2xl border border-white/15 bg-white/15 backdrop-blur-md p-8 shadow-xl">
-                <div className="flex justify-center mb-4 text-purple-400">
+                <div className="flex justify-center mb-4">
                     <img src={image} alt="404-error" width={120} />
                 </div>
 

@@ -24,8 +24,8 @@ api.interceptors.response.use(
         const url = error.config?.url || "";
         const serverMessage = error.response?.data?.message || error.response?.data?.error;
 
-        // Don't globally redirect on bootstrap check/login/register
-        const ignore401Paths = ["/auth/user", "/auth/login", "/auth/register"];
+        // Don't globally redirect on bootstrap or public routes
+        const ignore401Paths = ["/auth/user", "/auth/login", "/auth/register", "/auth/forgot-password", "/auth/reset-password"];
         const shouldIgnore401 = ignore401Paths.some((path) => url.includes(path));
 
         if (status === 401 && !handled && !shouldIgnore401) {

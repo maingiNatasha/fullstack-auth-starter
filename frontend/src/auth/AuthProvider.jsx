@@ -57,6 +57,14 @@ export function AuthProvider({ children }) {
         }
     };
 
+    const forgotPassword = async (email) => {
+        await authApi.forgotPassword(email);
+    };
+
+    const resetPassword = async (token, password) => {
+        await authApi.resetPassword(token, password);
+    };
+
     // Bootstrap: on initial app load, check if cookie exists by calling /auth/user
     // Bootstrapping = the process of restoring auth state when the app first loads.
     useEffect(() => {
@@ -106,6 +114,8 @@ export function AuthProvider({ children }) {
         register,
         logout,
         refreshUser,
+        forgotPassword,
+        resetPassword
     };
 
     return (
