@@ -16,6 +16,9 @@ RUN npm run build
 # --- Stage 2: Serve the Static Files via Nginx ---
 FROM nginx:alpine
 
+# This overwrites Nginx's default config with your proxy rules
+COPY nginx.conf /etc/nginx/conf.d/default.conf
+
 # Copy the compiled React files from Stage 1 into Nginx's public folder
 COPY --from=builder /app/dist /usr/share/nginx/html
 
