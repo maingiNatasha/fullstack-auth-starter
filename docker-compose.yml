@@ -1,0 +1,22 @@
+version: '3.8'
+
+services:
+  backend:
+    build: ./backend
+    container_name: express-backend
+    restart: always
+    ports:
+      - "5000:5000"
+    # Inject your RDS environment variables safely into the container
+    env_file:
+      - ./backend/.env
+
+  frontend:
+    build: ./frontend
+    container_name: react-frontend
+    restart: always
+    ports:
+      - "80:80"
+    # Ensures the backend starts running before the frontend launches
+    depends_on:
+      - backend
