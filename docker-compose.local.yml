@@ -17,4 +17,4 @@ services:
   # This updates the backend service to wait for the database
   backend:
     depends_on:
-      - mysql
+      - mysql-db
